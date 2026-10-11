@@ -4,7 +4,9 @@
   "package": "io.github.emberbocor.villagertradelabels.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
-  "client": [],
+  "client": [
+    "ItemEnchantmentsAccessor"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
