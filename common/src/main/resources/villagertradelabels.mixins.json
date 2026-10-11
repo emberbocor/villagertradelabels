@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
-    "ItemEnchantmentsAccessor"
+    "ItemEnchantmentsAccessor",
+    "MerchantScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
