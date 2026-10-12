@@ -33,8 +33,6 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
     @Unique
     private static final int ROW_HEIGHT = 20;
     @Unique
-    private static final int ROW_RIGHT = 92;
-    @Unique
     private static final int LABEL_LEFT = 27;
     @Unique
     private static final int DISCOUNTED_LABEL_LEFT = 42;
@@ -74,7 +72,7 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
             boolean discounted = offer.getCostA().getCount() != offer.getBaseCostA().getCount();
             int left = leftPos + (discounted ? DISCOUNTED_LABEL_LEFT : LABEL_LEFT);
             TradeLabels.of(offer.getResult(), registries).ifPresent(label -> TradeLabelRenderer.render(
-                    guiGraphics, font, label, left, leftPos + ROW_RIGHT, rowY + ROW_HEIGHT - 1, leftPos + RESULT_CENTER_X));
+                    guiGraphics, font, label, left, rowY + ROW_HEIGHT - 1, leftPos + RESULT_CENTER_X));
         }
     }
 }
