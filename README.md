@@ -4,7 +4,7 @@ See what a trade gives you without hovering every item.
 
 Villager Trade Labels adds a small tooltip-style label under the result of every trade in the vanilla trading screen. Enchanted books show their enchantment, enchanted gear shows its first enchantment, and explorer maps show where they lead. Scroll through a librarian's trades and spot Mending at a glance.
 
-Available for NeoForge. Client-side only.
+Available for NeoForge, Forge and Fabric. Client-side only.
 
 ## Features
 
@@ -20,18 +20,21 @@ Available for NeoForge. Client-side only.
 
 ## Requirements
 
-| | NeoForge |
-|---|---|
-| Minecraft | 1.21.1 |
-| Loader | NeoForge 21.1.1 or newer |
-| Jar | `villagertradelabels-neoforge-1.21.1-<version>.jar` |
+| | NeoForge | Forge | Fabric |
+|---|---|---|---|
+| Minecraft | 1.21.1 | 1.21.1 | 1.21 or 1.21.1 |
+| Loader | NeoForge 21.1.1 or newer | Forge 52.0.0 or newer | Fabric Loader 0.15.11 or newer |
+| Other | | | Fabric API 0.102.0 or newer |
+| Jar | `villagertradelabels-neoforge-1.21.1-<version>.jar` | `villagertradelabels-forge-1.21.1-<version>.jar` | `villagertradelabels-fabric-1.21-1.21.1-<version>.jar` |
+
+On Minecraft 1.21.1, NeoForge and Forge are separate loaders that do not run each other's mods, so each has its own jar. Pick the jar that matches your loader.
 
 ### Client and server
 
-The mod only changes what the trading screen shows, so it is purely client-side.
+The mod only changes what the trading screen shows, so it is purely client-side on every loader.
 
-- Install it on the client. It does not need to be on the server, and a client with the mod can join any server, modded or vanilla.
-- Installing it on a server does no harm; it simply does nothing there.
+- Install it on the client only. It does not need to be on the server, and a client with the mod can join any server, modded or vanilla, whatever loader the server uses.
+- Installing it on a dedicated server does no harm: Forge and Fabric skip it there, and on NeoForge it does nothing.
 
 ## Configuration
 
@@ -58,7 +61,7 @@ The file is created when it is missing. An invalid value is replaced by the defa
 ./gradlew build
 ```
 
-The jar is written to `neoforge/build/libs`. The project follows the [MultiLoader-Template](https://github.com/jaredlll08/MultiLoader-Template) layout: shared code lives in `common`, loader-specific code in `neoforge`.
+The jars are written to `neoforge/build/libs`, `forge/build/libs` and `fabric/build/libs`. The project follows the [MultiLoader-Template](https://github.com/jaredlll08/MultiLoader-Template) layout: shared code lives in `common`, loader-specific code in `neoforge`, `forge` and `fabric`.
 
 ## License
 
