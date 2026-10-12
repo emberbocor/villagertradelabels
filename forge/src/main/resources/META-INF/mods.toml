@@ -20,11 +20,11 @@ Shows enchantments and map names of trade results right in the trading screen. C
     mandatory=true
     versionRange="${forge_version_range}"
     ordering="NONE"
-    side="CLIENT"
+    side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
     versionRange="${minecraft_version_range}"
     ordering="NONE"
-    side="CLIENT"
+    side="BOTH"

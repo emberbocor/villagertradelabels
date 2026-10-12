@@ -33,12 +33,12 @@ public record TradeLabel(Component name, Component suffix) {
             segments.add(new Segment(style, content));
             return Optional.empty();
         }, Style.EMPTY);
-        while (!segments.isEmpty() && segments.getLast().content().isBlank()) {
-            segments.removeLast();
+        while (!segments.isEmpty() && segments.get(segments.size() - 1).content().isBlank()) {
+            segments.remove(segments.size() - 1);
         }
         if (!segments.isEmpty()) {
-            Segment last = segments.removeLast();
-            segments.add(new Segment(last.style(), last.content().stripTrailing()));
+            Segment last = segments.get(segments.size() - 1);
+            segments.set(segments.size() - 1, new Segment(last.style(), last.content().stripTrailing()));
         }
         return FormattedText.composite(segments.stream().map(segment -> FormattedText.of(segment.content(), segment.style())).toList());
     }

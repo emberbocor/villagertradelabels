@@ -3,6 +3,7 @@ package io.github.emberbocor.villagertradelabels.platform;
 import java.nio.file.Path;
 
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
 public interface PlatformHelper {
@@ -11,4 +12,6 @@ public interface PlatformHelper {
     boolean isModLoaded(String modId);
 
     Style rarityStyle(Rarity rarity);
+
+    int defaultHideFlags(ItemStack stack);
 }

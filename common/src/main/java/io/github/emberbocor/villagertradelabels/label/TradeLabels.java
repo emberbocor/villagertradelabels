@@ -4,79 +4,71 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
-
-import io.github.emberbocor.villagertradelabels.mixin.ItemEnchantmentsAccessor;
 import io.github.emberbocor.villagertradelabels.platform.Services;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 public final class TradeLabels {
+    private static final String HIDE_FLAGS = "HideFlags";
+
     private TradeLabels() {
     }
 
-    public static Optional<TradeLabel> of(ItemStack stack, HolderLookup.Provider registries) {
-        if (stack.isEmpty() || stack.has(DataComponents.HIDE_TOOLTIP)) {
+    public static Optional<TradeLabel> of(ItemStack stack) {
+        if (stack.isEmpty()) {
             return Optional.empty();
         }
-        HolderSet<Enchantment> order = tooltipOrder(registries);
+        int hideFlags = hideFlags(stack);
         List<EnchantmentLevel> enchantments = new ArrayList<>();
-        addShown(stack.get(DataComponents.STORED_ENCHANTMENTS), order, enchantments);
-        addShown(stack.get(DataComponents.ENCHANTMENTS), order, enchantments);
-        if (!enchantments.isEmpty()) {
-            return Optional.of(enchantmentLabel(enchantments.getFirst(), enchantments.size() - 1));
+        if (stack.getItem() instanceof EnchantedBookItem && isShown(hideFlags, ItemStack.TooltipPart.ADDITIONAL)) {
+            addKnown(EnchantedBookItem.getEnchantments(stack), enchantments);
         }
-        if (stack.is(Items.FILLED_MAP) && (stack.has(DataComponents.CUSTOM_NAME) || stack.has(DataComponents.ITEM_NAME))) {
+        if (stack.hasTag() && isShown(hideFlags, ItemStack.TooltipPart.ENCHANTMENTS)) {
+            addKnown(stack.getEnchantmentTags(), enchantments);
+        }
+        if (!enchantments.isEmpty()) {
+            return Optional.of(enchantmentLabel(enchantments.get(0), enchantments.size() - 1));
+        }
+        if (stack.is(Items.FILLED_MAP) && stack.hasCustomHoverName()) {
             return Optional.of(new TradeLabel(itemName(stack), Component.empty()));
         }
         return Optional.empty();
     }
 
-    private static HolderSet<Enchantment> tooltipOrder(HolderLookup.Provider registries) {
-        return registries.lookupOrThrow(Registries.ENCHANTMENT)
-                .get(EnchantmentTags.TOOLTIP_ORDER)
-                .<HolderSet<Enchantment>>map(tag -> tag)
-                .orElseGet(HolderSet::direct);
+    private static int hideFlags(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains(HIDE_FLAGS, Tag.TAG_ANY_NUMERIC) ? tag.getInt(HIDE_FLAGS) : Services.PLATFORM.defaultHideFlags(stack);
     }
 
-    private static void addShown(@Nullable ItemEnchantments enchantments, HolderSet<Enchantment> order, List<EnchantmentLevel> target) {
-        if (enchantments == null || !((ItemEnchantmentsAccessor) enchantments).villagertradelabels$showInTooltip()) {
-            return;
-        }
-        for (Holder<Enchantment> enchantment : order) {
-            int level = enchantments.getLevel(enchantment);
-            if (level > 0) {
-                target.add(new EnchantmentLevel(enchantment, level));
-            }
-        }
-        for (Object2IntMap.Entry<Holder<Enchantment>> entry : enchantments.entrySet()) {
-            if (!order.contains(entry.getKey())) {
-                target.add(new EnchantmentLevel(entry.getKey(), entry.getIntValue()));
-            }
+    private static boolean isShown(int hideFlags, ItemStack.TooltipPart part) {
+        return (hideFlags & part.getMask()) == 0;
+    }
+
+    private static void addKnown(ListTag tags, List<EnchantmentLevel> target) {
+        for (int i = 0; i < tags.size(); i++) {
+            CompoundTag tag = tags.getCompound(i);
+            BuiltInRegistries.ENCHANTMENT.getOptional(EnchantmentHelper.getEnchantmentId(tag))
+                    .ifPresent(enchantment -> target.add(new EnchantmentLevel(enchantment, EnchantmentHelper.getEnchantmentLevel(tag))));
         }
     }
 
     private static TradeLabel enchantmentLabel(EnchantmentLevel first, int others) {
-        Holder<Enchantment> enchantment = first.enchantment();
-        MutableComponent name = enchantment.value().description().copy();
-        ComponentUtils.mergeStyles(name, Style.EMPTY.withColor(enchantment.is(EnchantmentTags.CURSE) ? ChatFormatting.RED : ChatFormatting.GRAY));
+        Enchantment enchantment = first.enchantment();
+        MutableComponent name = Component.translatable(enchantment.getDescriptionId())
+                .withStyle(enchantment.isCurse() ? ChatFormatting.RED : ChatFormatting.GRAY);
         MutableComponent suffix = Component.empty();
-        if (first.level() != 1 || enchantment.value().getMaxLevel() != 1) {
+        if (first.level() != 1 || enchantment.getMaxLevel() != 1) {
             suffix.append(Component.empty()
                     .withStyle(name.getStyle())
                     .append(CommonComponents.SPACE)
@@ -90,12 +82,12 @@ public final class TradeLabels {
 
     private static Component itemName(ItemStack stack) {
         MutableComponent name = Component.empty().append(stack.getHoverName()).withStyle(Services.PLATFORM.rarityStyle(stack.getRarity()));
-        if (stack.has(DataComponents.CUSTOM_NAME)) {
+        if (stack.hasCustomHoverName()) {
             name.withStyle(ChatFormatting.ITALIC);
         }
         return name;
     }
 
-    private record EnchantmentLevel(Holder<Enchantment> enchantment, int level) {
+    private record EnchantmentLevel(Enchantment enchantment, int level) {
     }
 }

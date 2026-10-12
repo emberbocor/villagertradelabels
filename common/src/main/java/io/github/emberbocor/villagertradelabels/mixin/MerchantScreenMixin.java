@@ -17,7 +17,6 @@ import io.github.emberbocor.villagertradelabels.label.TradeLabels;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MerchantMenu;
@@ -58,20 +57,19 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
     @Inject(method = "render", at = @At("TAIL"))
     private void villagertradelabels$renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         MerchantOffers offers = menu.getOffers();
-        if (!ClientConfig.showLabels() || offers.isEmpty() || minecraft == null || minecraft.level == null) {
+        if (!ClientConfig.showLabels() || offers.isEmpty()) {
             return;
         }
         List<MerchantOffer> lockedOffers = TradePeekCompat.lockedOffers(this);
         int total = offers.size() + lockedOffers.size();
         int firstIndex = total > VISIBLE_ROWS ? scrollOff : 0;
-        RegistryAccess registries = minecraft.level.registryAccess();
         for (int row = 0; row < VISIBLE_ROWS && firstIndex + row < total; row++) {
             int index = firstIndex + row;
             MerchantOffer offer = index < offers.size() ? offers.get(index) : lockedOffers.get(index - offers.size());
             int rowY = topPos + FIRST_ROW_Y + row * ROW_HEIGHT;
             boolean discounted = offer.getCostA().getCount() != offer.getBaseCostA().getCount();
             int left = leftPos + (discounted ? DISCOUNTED_LABEL_LEFT : LABEL_LEFT);
-            TradeLabels.of(offer.getResult(), registries).ifPresent(label -> TradeLabelRenderer.render(
+            TradeLabels.of(offer.getResult()).ifPresent(label -> TradeLabelRenderer.render(
                     guiGraphics, font, label, left, rowY + ROW_HEIGHT - 1, leftPos + RESULT_CENTER_X));
         }
     }

@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
 public final class FabricPlatformHelper implements PlatformHelper {
@@ -19,6 +20,11 @@ public final class FabricPlatformHelper implements PlatformHelper {
 
     @Override
     public Style rarityStyle(Rarity rarity) {
-        return Style.EMPTY.withColor(rarity.color());
+        return Style.EMPTY.withColor(rarity.color);
+    }
+
+    @Override
+    public int defaultHideFlags(ItemStack stack) {
+        return 0;
     }
 }
