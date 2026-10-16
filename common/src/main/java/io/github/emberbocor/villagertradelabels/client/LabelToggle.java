@@ -11,8 +11,11 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class LabelToggle extends AbstractButton {
     public static final int SIZE = 11;
@@ -26,12 +29,12 @@ public final class LabelToggle extends AbstractButton {
         updateMessage();
     }
 
-    private static ResourceLocation sprite(String name) {
-        return ResourceLocation.fromNamespaceAndPath(VillagerTradeLabels.MODID, name);
+    private static Identifier sprite(String name) {
+        return Identifier.fromNamespaceAndPath(VillagerTradeLabels.MODID, name);
     }
 
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers input) {
         ClientConfig.setShowLabels(!ClientConfig.showLabels());
         updateMessage();
     }
@@ -43,8 +46,8 @@ public final class LabelToggle extends AbstractButton {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.blitSprite(SPRITES.get(ClientConfig.showLabels(), isHovered()), getX(), getY(), getWidth(), getHeight());
+    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SPRITES.get(ClientConfig.showLabels(), isHovered()), getX(), getY(), getWidth(), getHeight());
     }
 
     @Override
@@ -52,7 +55,7 @@ public final class LabelToggle extends AbstractButton {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         return false;
     }
 

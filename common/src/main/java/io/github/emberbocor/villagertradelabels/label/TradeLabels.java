@@ -4,15 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
-
-import io.github.emberbocor.villagertradelabels.mixin.ItemEnchantmentsAccessor;
-import io.github.emberbocor.villagertradelabels.platform.Services;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
@@ -23,6 +20,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
@@ -31,20 +29,26 @@ public final class TradeLabels {
     }
 
     public static Optional<TradeLabel> of(ItemStack stack, HolderLookup.Provider registries) {
-        if (stack.isEmpty() || stack.has(DataComponents.HIDE_TOOLTIP)) {
+        TooltipDisplay display = stack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT);
+        if (stack.isEmpty() || display.hideTooltip()) {
             return Optional.empty();
         }
         HolderSet<Enchantment> order = tooltipOrder(registries);
         List<EnchantmentLevel> enchantments = new ArrayList<>();
-        addShown(stack.get(DataComponents.STORED_ENCHANTMENTS), order, enchantments);
-        addShown(stack.get(DataComponents.ENCHANTMENTS), order, enchantments);
+        addShown(stack, DataComponents.STORED_ENCHANTMENTS, display, order, enchantments);
+        addShown(stack, DataComponents.ENCHANTMENTS, display, order, enchantments);
         if (!enchantments.isEmpty()) {
             return Optional.of(enchantmentLabel(enchantments.getFirst(), enchantments.size() - 1));
         }
-        if (stack.is(Items.FILLED_MAP) && (stack.has(DataComponents.CUSTOM_NAME) || stack.has(DataComponents.ITEM_NAME))) {
-            return Optional.of(new TradeLabel(itemName(stack), Component.empty()));
+        if (stack.is(Items.FILLED_MAP) && (stack.has(DataComponents.CUSTOM_NAME) || hasOwnItemName(stack))) {
+            return Optional.of(new TradeLabel(stack.getStyledHoverName(), Component.empty()));
         }
         return Optional.empty();
+    }
+
+    private static boolean hasOwnItemName(ItemStack stack) {
+        Optional<?> itemName = stack.getComponentsPatch().get(DataComponents.ITEM_NAME);
+        return itemName != null && itemName.isPresent();
     }
 
     private static HolderSet<Enchantment> tooltipOrder(HolderLookup.Provider registries) {
@@ -54,8 +58,10 @@ public final class TradeLabels {
                 .orElseGet(HolderSet::direct);
     }
 
-    private static void addShown(@Nullable ItemEnchantments enchantments, HolderSet<Enchantment> order, List<EnchantmentLevel> target) {
-        if (enchantments == null || !((ItemEnchantmentsAccessor) enchantments).villagertradelabels$showInTooltip()) {
+    private static void addShown(ItemStack stack, DataComponentType<ItemEnchantments> type, TooltipDisplay display,
+                                 HolderSet<Enchantment> order, List<EnchantmentLevel> target) {
+        ItemEnchantments enchantments = stack.get(type);
+        if (enchantments == null || !display.shows(type)) {
             return;
         }
         for (Holder<Enchantment> enchantment : order) {
@@ -86,14 +92,6 @@ public final class TradeLabels {
             suffix.append(Component.literal(" +" + others).withStyle(ChatFormatting.GRAY));
         }
         return new TradeLabel(name, suffix);
-    }
-
-    private static Component itemName(ItemStack stack) {
-        MutableComponent name = Component.empty().append(stack.getHoverName()).withStyle(Services.PLATFORM.rarityStyle(stack.getRarity()));
-        if (stack.has(DataComponents.CUSTOM_NAME)) {
-            name.withStyle(ChatFormatting.ITALIC);
-        }
-        return name;
     }
 
     private record EnchantmentLevel(Holder<Enchantment> enchantment, int level) {

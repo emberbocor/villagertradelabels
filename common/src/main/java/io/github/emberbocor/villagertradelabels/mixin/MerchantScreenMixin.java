@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import io.github.emberbocor.villagertradelabels.client.LabelToggle;
+import io.github.emberbocor.villagertradelabels.client.TradeLabelsScreen;
 import io.github.emberbocor.villagertradelabels.compat.TradePeekCompat;
 import io.github.emberbocor.villagertradelabels.config.ClientConfig;
 import io.github.emberbocor.villagertradelabels.label.TradeLabelRenderer;
@@ -25,7 +26,7 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
 @Mixin(MerchantScreen.class)
-public abstract class MerchantScreenMixin extends AbstractContainerScreen<MerchantMenu> {
+public abstract class MerchantScreenMixin extends AbstractContainerScreen<MerchantMenu> implements TradeLabelsScreen {
     @Unique
     private static final int VISIBLE_ROWS = 7;
     @Unique
@@ -55,16 +56,17 @@ public abstract class MerchantScreenMixin extends AbstractContainerScreen<Mercha
         addRenderableWidget(new LabelToggle(leftPos + TOGGLE_X, topPos + TOGGLE_Y));
     }
 
-    @Inject(method = "render", at = @At("TAIL"))
-    private void villagertradelabels$renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    @Override
+    public void villagertradelabels$renderLabels(GuiGraphics guiGraphics) {
         MerchantOffers offers = menu.getOffers();
-        if (!ClientConfig.showLabels() || offers.isEmpty() || minecraft == null || minecraft.level == null) {
+        if (!ClientConfig.showLabels() || offers.isEmpty() || minecraft.level == null) {
             return;
         }
         List<MerchantOffer> lockedOffers = TradePeekCompat.lockedOffers(this);
         int total = offers.size() + lockedOffers.size();
         int firstIndex = total > VISIBLE_ROWS ? scrollOff : 0;
         RegistryAccess registries = minecraft.level.registryAccess();
+        guiGraphics.nextStratum();
         for (int row = 0; row < VISIBLE_ROWS && firstIndex + row < total; row++) {
             int index = firstIndex + row;
             MerchantOffer offer = index < offers.size() ? offers.get(index) : lockedOffers.get(index - offers.size());
