@@ -4,7 +4,7 @@ import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
@@ -20,7 +20,7 @@ public final class TradeLabelRenderer {
     private TradeLabelRenderer() {
     }
 
-    public static void render(GuiGraphics guiGraphics, Font font, TradeLabel label, int left, int bottom, int centerX) {
+    public static void extract(GuiGraphicsExtractor graphics, Font font, TradeLabel label, int left, int bottom, int centerX) {
         float pixelScale = pixelScale();
         int maxTextWidth = Mth.floor(2 * (centerX - left) / pixelScale) - 2 * PADDING;
         FormattedCharSequence text = label.fit(font, Mth.floor(maxTextWidth * TEXT_WIDTH_FACTOR));
@@ -31,13 +31,13 @@ public final class TradeLabelRenderer {
         int width = textWidth + 2 * PADDING;
         int boxX = -(width / 2);
 
-        Matrix3x2fStack pose = guiGraphics.pose();
+        Matrix3x2fStack pose = graphics.pose();
         pose.pushMatrix();
         pose.translate(centerX, bottom);
         pose.scale(pixelScale * SIZE_FACTOR, pixelScale * SIZE_FACTOR);
-        TooltipRenderUtil.renderTooltipBackground(guiGraphics,
+        TooltipRenderUtil.extractTooltipBackground(graphics,
                 boxX + VANILLA_INSET, VANILLA_INSET - BOX_HEIGHT, width - 2 * VANILLA_INSET, BOX_HEIGHT - 2 * VANILLA_INSET, null);
-        guiGraphics.drawString(font, text, boxX + PADDING, PADDING - BOX_HEIGHT, 0xFFFFFFFF, true);
+        graphics.text(font, text, boxX + PADDING, PADDING - BOX_HEIGHT, 0xFFFFFFFF, true);
         pose.popMatrix();
     }
 

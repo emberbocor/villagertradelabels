@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import io.github.emberbocor.villagertradelabels.VillagerTradeLabels;
 import io.github.emberbocor.villagertradelabels.config.ClientConfig;
 import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -46,8 +46,8 @@ public final class LabelToggle extends AbstractButton {
     }
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SPRITES.get(ClientConfig.showLabels(), isHovered()), getX(), getY(), getWidth(), getHeight());
+    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SPRITES.get(ClientConfig.showLabels(), isHovered()), getX(), getY(), getWidth(), getHeight());
     }
 
     @Override

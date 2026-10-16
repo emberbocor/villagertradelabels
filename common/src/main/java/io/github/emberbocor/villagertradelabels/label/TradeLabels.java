@@ -47,8 +47,7 @@ public final class TradeLabels {
     }
 
     private static boolean hasOwnItemName(ItemStack stack) {
-        Optional<?> itemName = stack.getComponentsPatch().get(DataComponents.ITEM_NAME);
-        return itemName != null && itemName.isPresent();
+        return stack.hasNonDefault(DataComponents.ITEM_NAME) && stack.has(DataComponents.ITEM_NAME);
     }
 
     private static HolderSet<Enchantment> tooltipOrder(HolderLookup.Provider registries) {
