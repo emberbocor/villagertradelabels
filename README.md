@@ -4,7 +4,7 @@ See what a trade gives you without hovering every item.
 
 Villager Trade Labels adds a small tooltip-style label under the result of every trade in the vanilla trading screen. Enchanted books show their enchantment, enchanted gear shows its first enchantment, and explorer maps show where they lead. Scroll through a librarian's trades and spot Mending at a glance.
 
-Available for NeoForge, Forge and Fabric. Client-side only.
+Available for Minecraft 1.21.11 on NeoForge, Forge and Fabric. Client-side only.
 
 ## Features
 
@@ -22,12 +22,12 @@ Available for NeoForge, Forge and Fabric. Client-side only.
 
 | | NeoForge | Forge | Fabric |
 |---|---|---|---|
-| Minecraft | 1.21.1 | 1.21.1 | 1.21 or 1.21.1 |
-| Loader | NeoForge 21.1.1 or newer | Forge 52.0.0 or newer | Fabric Loader 0.15.11 or newer |
-| Other | | | Fabric API 0.102.0 or newer |
-| Jar | `villagertradelabels-neoforge-1.21.1-<version>.jar` | `villagertradelabels-forge-1.21.1-<version>.jar` | `villagertradelabels-fabric-1.21-1.21.1-<version>.jar` |
+| Minecraft | 1.21.11 | 1.21.11 | 1.21.11 |
+| Loader | NeoForge 21.11.42 or newer | Forge 61.0.1 or newer | Fabric Loader 0.17.3 or newer |
+| Other | | | Fabric API 0.139.5 or newer |
+| Jar | `villagertradelabels-neoforge-1.21.11-<version>.jar` | `villagertradelabels-forge-1.21.11-<version>.jar` | `villagertradelabels-fabric-1.21.11-<version>.jar` |
 
-On Minecraft 1.21.1, NeoForge and Forge are separate loaders that do not run each other's mods, so each has its own jar. Pick the jar that matches your loader.
+On Minecraft 1.21.11, NeoForge and Forge are separate loaders that do not run each other's mods, so each has its own jar. Pick the jar that matches your loader.
 
 ### Client and server
 
@@ -52,8 +52,8 @@ The file is created when it is missing. An invalid value is replaced by the defa
 
 ## Compatibility notes
 
-- **Villager Trade Peek:** works together without depending on it. When Trade Peek is installed, its greyed-out locked trades get labels too, drawn on top of the grey overlay, so you can see which future trade has the book you want.
-- **Villager Trade Swap:** works together. Its toggle sits to the right of the "Trades" label, this mod's toggle at the left edge of the trade list, and labels update right after a trade is swapped.
+- **Villager Trade Peek (1.21.11):** works together without depending on it. When Trade Peek is installed, its greyed-out locked trades get labels too, drawn on top of the grey overlay, so you can see which future trade has the book you want.
+- **Villager Trade Swap (1.21.11):** works together. Its toggle sits to the right of the "Trades" label, this mod's toggle at the left edge of the trade list, and labels update right after a trade is swapped.
 
 ## Building from source
 
