@@ -4,7 +4,7 @@ See what a trade gives you without hovering every item.
 
 Villager Trade Labels adds a small tooltip-style label under the result of every trade in the vanilla trading screen. Enchanted books show their enchantment, enchanted gear shows its first enchantment, and explorer maps show where they lead. Scroll through a librarian's trades and spot Mending at a glance.
 
-Available for Minecraft 26.1 to 26.1.2 on NeoForge, Forge and Fabric. Client-side only.
+Available for Minecraft 26.2 on NeoForge, Forge and Fabric. Client-side only.
 
 ## Features
 
@@ -22,12 +22,12 @@ Available for Minecraft 26.1 to 26.1.2 on NeoForge, Forge and Fabric. Client-sid
 
 | | NeoForge | Forge | Fabric |
 |---|---|---|---|
-| Minecraft | 26.1, 26.1.1 or 26.1.2 | 26.1, 26.1.1 or 26.1.2 | 26.1, 26.1.1 or 26.1.2 |
-| Loader | NeoForge 26.1.0.1-beta or newer | Forge 62 (26.1), 63 (26.1.1) or 64 (26.1.2) | Fabric Loader 0.18.4 or newer |
-| Other | | | Fabric API 0.144.0 or newer |
-| Jar | `villagertradelabels-neoforge-26.1-26.1.2-<version>.jar` | `villagertradelabels-forge-26.1-26.1.2-<version>.jar` | `villagertradelabels-fabric-26.1-26.1.2-<version>.jar` |
+| Minecraft | 26.2 | 26.2 | 26.2 |
+| Loader | NeoForge 26.2.0.0-beta or newer | Forge 65.0.0 or newer | Fabric Loader 0.18.4 or newer |
+| Other | | | Fabric API 0.152.1 or newer |
+| Jar | `villagertradelabels-neoforge-26.2-<version>.jar` | `villagertradelabels-forge-26.2-<version>.jar` | `villagertradelabels-fabric-26.2-<version>.jar` |
 
-Minecraft 26.1 needs Java 25. One jar per loader covers all three 26.1 versions. NeoForge only has beta builds for 26.1 and 26.1.1; the first stable NeoForge is for 26.1.2. Each 26.1 version has its own Forge series. NeoForge and Forge are separate loaders that do not run each other's mods, so pick the jar that matches your loader.
+Minecraft 26.2 needs Java 25. The first stable NeoForge build for 26.2 is 26.2.0.57; the earlier beta builds work too. NeoForge and Forge are separate loaders that do not run each other's mods, so pick the jar that matches your loader.
 
 ### Client and server
 
@@ -52,7 +52,7 @@ The file is created when it is missing. An invalid value is replaced by the defa
 
 ## Compatibility notes
 
-- **Villager Trade Peek and Villager Trade Swap:** there are no 26.1 versions of them yet, so this version has not been tested with them. The optional Trade Peek integration is still included; without Trade Peek it simply stays off.
+- **Villager Trade Peek and Villager Trade Swap:** there are no 26.2 versions of them yet, so this version has not been tested with them. The optional Trade Peek integration is still included; without Trade Peek it simply stays off.
 
 ## Building from source
 
@@ -60,7 +60,7 @@ The file is created when it is missing. An invalid value is replaced by the defa
 ./gradlew build
 ```
 
-The jars are written to `neoforge/build/libs`, `forge/build/libs` and `fabric/build/libs`. Building needs Java 25. The development runs use `runs/26.1/...`. The project follows the [MultiLoader-Template](https://github.com/jaredlll08/MultiLoader-Template) layout: shared code lives in `common`, loader-specific code in `neoforge`, `forge` and `fabric`.
+The jars are written to `neoforge/build/libs`, `forge/build/libs` and `fabric/build/libs`. Building needs Java 25. The development runs use `runs/26.2/...`. The project follows the [MultiLoader-Template](https://github.com/jaredlll08/MultiLoader-Template) layout: shared code lives in `common`, loader-specific code in `neoforge`, `forge` and `fabric`.
 
 ## License
 
