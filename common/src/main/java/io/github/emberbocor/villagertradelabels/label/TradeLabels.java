@@ -20,6 +20,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -40,10 +41,17 @@ public final class TradeLabels {
         if (!enchantments.isEmpty()) {
             return Optional.of(enchantmentLabel(enchantments.getFirst(), enchantments.size() - 1));
         }
-        if (stack.is(Items.FILLED_MAP) && (stack.has(DataComponents.CUSTOM_NAME) || hasOwnItemName(stack))) {
+        if (isNamedMap(stack)) {
             return Optional.of(new TradeLabel(stack.getStyledHoverName(), Component.empty()));
         }
         return Optional.empty();
+    }
+
+    private static boolean isNamedMap(ItemStack stack) {
+        if (!(stack.getItem() instanceof MapItem)) {
+            return false;
+        }
+        return !stack.is(Items.FILLED_MAP) || stack.has(DataComponents.CUSTOM_NAME) || hasOwnItemName(stack);
     }
 
     private static boolean hasOwnItemName(ItemStack stack) {
